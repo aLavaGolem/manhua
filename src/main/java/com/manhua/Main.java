@@ -69,17 +69,9 @@ public class Main {
                         }
 
                     } catch (Exception e) {
-                        // try(FileWriter fw = new FileWriter("fail.log",true))
-                        // {
-                        // fw.write(strData+" "+new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new
-                        // Date()));
-                        // } catch (Exception e2) {
-
-                        // }
                         Mq.sendMessage(strData, "manhua2-fail");
                     }
                 } catch (Exception e) {
-                    // TODO: handle exception
                     e.printStackTrace();
                 }
 
@@ -113,12 +105,6 @@ public class Main {
                         }
 
                     } catch (Exception e) {
-                        // try (FileWriter fw = new FileWriter("fail.log", true)) {
-                        // fw.write(strData + " " + new SimpleDateFormat("yyyy-MM-dd
-                        // HH:mm:ss").format(new Date()));
-                        // } catch (Exception e2) {
-
-                        // }
                         Mq.sendMessage(strData, "manhua3-fail");
                     }
 

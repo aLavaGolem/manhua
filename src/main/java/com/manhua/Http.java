@@ -6,10 +6,12 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-
-import com.github.kevinsawicki.http.HttpRequest;
+import org.apache.log4j.*;
 
 public class Http {
+
+    private static Logger logger = Logger.getLogger(Http.class);
+    
     public static void main(String[] args) throws Exception {
         String url = "http://www.huhudm.com/huhu2086.html";
         System.out.println(getTimeOut(url));
@@ -90,6 +92,6 @@ public class Http {
        // 完毕，关闭所有链接
        os.close();
        is.close();
-       System.out.println("下载完成："+path+" url:"+urlString);
+       logger.info("下载完成："+path);  
     }
 }
