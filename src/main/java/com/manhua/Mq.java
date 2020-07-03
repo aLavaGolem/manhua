@@ -12,7 +12,7 @@ public class Mq {
     private static Channel  channel =null;
     static {
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("123.207.245.18");
+        factory.setHost("127.0.0.1");
         factory.setUsername("root");
         factory.setPassword("root");
         factory.setPort(5672);
@@ -31,7 +31,7 @@ public class Mq {
 
     public static void main(String[] args) throws Exception {
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("123.207.245.18");
+        factory.setHost("127.0.0.1");
         factory.setUsername("root");
         factory.setPassword("root");
         factory.setPort(5672);
