@@ -14,7 +14,7 @@
             Persistence unit for the JPA tutorial of the Hibernate Getting Started Guide
         </description>
 
-        <class>com.manhua.entity.Link.java</class>
+        <class>com.manhua.entity.Link</class>
 
         <properties>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver" />
