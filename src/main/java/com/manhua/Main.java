@@ -2,7 +2,9 @@ package com.manhua;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.ArrayList;
+
+import com.manhua.entity.Link;
+import com.manhua.util.*;
 import com.rabbitmq.client.DeliverCallback;
 import java.text.SimpleDateFormat;
 import java.io.*;
@@ -17,21 +19,44 @@ public class Main {
     public static void main(String[] args) throws Exception {
         DeliverCallback deliverCallback1 = (consumerTag, delivery) -> {
 
-            fixedThreadPool.execute(() -> {
+            //fixedThreadPool.execute(() -> {
                 try {
                     String url = new String(delivery.getBody(), "UTF-8");
+                    
+                    //查询数据库
+                    if(DB.urlExists(url)){
+                        return;
+                    }
+                   Link link= new Link(url,null,new Date(),10);
+                    DB.save(link);
+
+
+
                     System.out.println("Received:" + url);
                     try {
                         String body = Http.getTimeOut(url);
-                        ArrayList<UrlData> list = Html.pareHtml(body);
+                        StringBuilder sb = new StringBuilder();
+                        ArrayList<UrlData> list = Html.pareHtml(body,sb);
                         System.out.println(list);
                         String pathQ = "/home/manhua/";
-                        // String pathQ = "/";
+                        //String pathQ = "";
+
+                        ArrayList<Link> array = new ArrayList<Link>();
+
                         for (UrlData data : list) {
                             new File(pathQ + data.getPath()).mkdirs();
-                            Mq.sendMessage(data.getUrl() + "#" + pathQ + "/" + data.getPath(), "manhua2");
-                        }
+                            array.add(new Link(data.getUrl(),data.getPath(),new Date(),data.getName(),data.getParentName(),url,11));
 
+                            Mq.sendMessage(data.getUrl() + "#" + pathQ + data.getPath(), "manhua2");
+                            
+                        }
+                        if(array.size()>0){
+                            DB.save(array);
+                        }
+                        link.setName(sb.toString());
+                        link.setPath(sb.toString());
+                        DB.update(link);
+                        
                     } catch (Exception e) {
                         // try(FileWriter fw = new FileWriter("fail.log",true))
                         // {
@@ -47,7 +72,7 @@ public class Main {
                     e.printStackTrace();
                 }
 
-            });
+            //});
 
         };
         Mq.getMessage(deliverCallback1, "manhua1");
@@ -61,11 +86,21 @@ public class Main {
                     String path = strData.split("#")[1];
 
                     System.out.println("Received:" + url);
+
+                    ArrayList<Link> array = new ArrayList<Link>();
                     try {
                         String body = Http.getTimeOut(url);
                         ArrayList<String> list = Html.findUrl(body, url);
                         for (String str : list) {
                             Mq.sendMessage(str + "#" + path, "manhua3");
+
+                            if(!DB.urlExists(str)){
+                                array.add( new Link(str,path,new Date(),null,null,url,12));
+                            }
+                            
+                        }
+                        if(array.size()>0){
+                            DB.save(array);
                         }
 
                     } catch (Exception e) {
@@ -90,16 +125,23 @@ public class Main {
                     try {
                         String body = Http.getTimeOut(url);
                         UrlData data = Html.getUrl(body, path);
+                        
+
+                        if(!DB.urlExists(data.getUrl())){
+                            DB.save( new Link(data.getUrl(),data.getPath(),new Date(),null,null,url,13));
+                        }
+
                         if (data != null) {
                             try {
                                 Http.downImageTimeOut(data.getUrl(), data.getPath());
                             } catch (Exception e) {
-                                try (FileWriter fw = new FileWriter("fail.log", true)) {
-                                    fw.write(strData + " "
-                                            + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-                                } catch (Exception e2) {
-                                    Mq.sendMessage(strData, "manhua3-fail");
-                                }
+                                // try (FileWriter fw = new FileWriter("fail.log", true)) {
+                                //     fw.write(strData + " "
+                                //             + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+                                // } catch (Exception e2) {
+                                //     Mq.sendMessage(strData, "manhua3-fail");
+                                // }
+                                Mq.sendMessage(strData, "manhua3-fail");
                             }
 
                         }
