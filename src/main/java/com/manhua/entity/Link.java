@@ -113,6 +113,7 @@ public class Link {
 	public void setLevel(Integer level) {
 		this.level = level;
 	}
+	@Column(name="parent_id")
 	public Long getParentId() {
 		return parentId;
 	}
