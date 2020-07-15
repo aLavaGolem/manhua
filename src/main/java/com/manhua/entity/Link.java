@@ -20,6 +20,7 @@ public class Link {
 	private String name;
 	private String parentName;
 	private String parentUrl;
+	private Long parentId;
 	private Integer level;
 
 	public Link (){
@@ -112,9 +113,13 @@ public class Link {
 	public void setLevel(Integer level) {
 		this.level = level;
 	}
+	@Column(name="parent_id")
+	public Long getParentId() {
+		return parentId;
+	}
+	public void setParentId(Long parentId) {
+		this.parentId = parentId;
+	}
 
-
-	
-	
 
 }

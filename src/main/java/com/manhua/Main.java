@@ -19,7 +19,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         DeliverCallback deliverCallback1 = (consumerTag, delivery) -> {
 
-            //fixedThreadPool.execute(() -> {
+            fixedThreadPool.execute(() -> {
                 try {
                     String url = new String(delivery.getBody(), "UTF-8");
                     
@@ -41,18 +41,21 @@ public class Main {
                         String pathQ = "/home/manhua/";
                         //String pathQ = "";
 
-                        ArrayList<Link> array = new ArrayList<Link>();
+                        //ArrayList<Link> array = new ArrayList<Link>();
 
                         for (UrlData data : list) {
                             new File(pathQ + data.getPath()).mkdirs();
-                            array.add(new Link(data.getUrl(),data.getPath(),new Date(),data.getName(),data.getParentName(),url,11));
+                            Link link_temp = new Link(data.getUrl(),data.getPath(),new Date(),data.getName(),data.getParentName(),url,11);
+                            link_temp.setParentId(link.getId());
+                            //array.add(link_temp);
+                            DB.save(link_temp);
 
-                            Mq.sendMessage(data.getUrl() + "#" + pathQ + data.getPath(), "manhua2");
+                            Mq.sendMessage(data.getUrl() + "#" + pathQ + data.getPath()+"#"+link_temp.getId(), "manhua2");
                             
                         }
-                        if(array.size()>0){
-                            DB.save(array);
-                        }
+//                        if(array.size()>0){
+//                            DB.save(array);
+//                        }
                         link.setName(sb.toString());
                         link.setPath(sb.toString());
                         DB.update(link);
@@ -72,7 +75,7 @@ public class Main {
                     e.printStackTrace();
                 }
 
-            //});
+            });
 
         };
         Mq.getMessage(deliverCallback1, "manhua1");
@@ -84,7 +87,8 @@ public class Main {
                     String strData = new String(delivery.getBody(), "UTF-8");
                     String url = strData.split("#")[0];
                     String path = strData.split("#")[1];
-
+                    String id = strData.split("#")[2];
+                    
                     System.out.println("Received:" + url);
 
                     ArrayList<Link> array = new ArrayList<Link>();
@@ -92,10 +96,12 @@ public class Main {
                         String body = Http.getTimeOut(url);
                         ArrayList<String> list = Html.findUrl(body, url);
                         for (String str : list) {
-                            Mq.sendMessage(str + "#" + path, "manhua3");
+                            Mq.sendMessage(str + "#" + path+"#"+id, "manhua3");
 
                             if(!DB.urlExists(str)){
-                                array.add( new Link(str,path,new Date(),null,null,url,12));
+                                Link link_temp = new Link(str,path,new Date(),null,null,url,12);
+                                link_temp.setParentId(Long.valueOf(id));
+								array.add( link_temp);
                             }
                             
                         }
@@ -121,6 +127,7 @@ public class Main {
                     String strData = new String(delivery.getBody(), "UTF-8");
                     String url = strData.split("#")[0];
                     String path = strData.split("#")[1];
+                    String id = strData.split("#")[2];
                     System.out.println("Received:" + url);
                     try {
                         String body = Http.getTimeOut(url);
@@ -128,7 +135,9 @@ public class Main {
                         
 
                         if(!DB.urlExists(data.getUrl())){
-                            DB.save( new Link(data.getUrl(),data.getPath(),new Date(),null,null,url,13));
+                            Link link_temp = new Link(data.getUrl(),data.getPath(),new Date(),null,null,url,13);
+                            link_temp.setParentId(Long.valueOf(id));
+							DB.save( link_temp);
                         }
 
                         if (data != null) {
