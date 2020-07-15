@@ -14,13 +14,13 @@
             Persistence unit for the JPA tutorial of the Hibernate Getting Started Guide
         </description>
 
-        <class>com.manhua.entity.Link</class>
+        <class>com.manhua.entity.Link.java</class>
 
         <properties>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver" />
-            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://123.207.245.18:3306/manhua" />
+            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/manhua" />
             <property name="javax.persistence.jdbc.user" value="root" />
-            <property name="javax.persistence.jdbc.password" value="123456" />
+            <property name="javax.persistence.jdbc.password" value="pgi?&Ay,j9s&" />
 
             <property name="hibernate.show_sql" value="true" />
             <property name="hibernate.hbm2ddl.auto" value="update" />

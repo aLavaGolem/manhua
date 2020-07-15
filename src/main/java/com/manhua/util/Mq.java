@@ -12,9 +12,9 @@ public class Mq {
     private static Channel  channel =null;
     static {
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("123.207.245.18");
-        factory.setUsername("root");
-        factory.setPassword("root");
+        factory.setHost("localhost");
+        factory.setUsername("guest");
+        factory.setPassword("guest");
         factory.setPort(5672);
         Connection connection;
         try {
@@ -31,9 +31,9 @@ public class Mq {
 
     public static void main(String[] args) throws Exception {
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("123.207.245.18");
-        factory.setUsername("root");
-        factory.setPassword("root");
+        factory.setHost("localhost");
+        factory.setUsername("guest");
+        factory.setPassword("guest");
         factory.setPort(5672);
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
