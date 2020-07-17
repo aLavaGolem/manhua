@@ -68,6 +68,7 @@ public class Main {
                         // } catch (Exception e2) {
 
                         // }
+                    	e.printStackTrace();
                         Mq.sendMessage(url, "manhua1-fail");
                     }
                 } catch (Exception e) {
