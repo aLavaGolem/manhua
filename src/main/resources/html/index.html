@@ -76,7 +76,7 @@
         }
      },
     created: function () {
-      var url ="http://123.207.245.18:8888/manhua/";
+      var url ="http://123.207.245.18:8888/app/manhua/";
       var _this = this;
     
       axios.get(url)
@@ -84,8 +84,8 @@
          if(response.data instanceof Array){
           _this.list=[]
           for(var i=0;i<response.data.length;i++){
-            var href="./subPage.html?"+response.data[i];
-            _this.list[i]={"name":response.data[i],"href":href}
+            var href="./subPage.html?"+response.data[i].id;
+            _this.list[i]={"name":response.data[i].name,"href":href}
           }
          }
       })
